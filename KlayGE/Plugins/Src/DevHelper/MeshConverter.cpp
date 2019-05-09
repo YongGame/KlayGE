@@ -457,7 +457,6 @@ namespace
 			{
 				aiString str;
 				aiGetMaterialTexture(mtl, aiTextureType_DIFFUSE, 0, &str, 0, 0, 0, 0, 0, 0);
-
 				render_mtl.tex_names[RenderMaterial::TS_Albedo] = str.C_Str();
 			}
 
@@ -466,7 +465,6 @@ namespace
 			{
 				aiString str;
 				aiGetMaterialTexture(mtl, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, &str, 0, 0, 0, 0, 0, 0);
-
 				render_mtl.tex_names[RenderMaterial::TS_Glossiness] = str.C_Str();
 			}
 			else
@@ -476,7 +474,6 @@ namespace
 				{
 					aiString str;
 					aiGetMaterialTexture(mtl, aiTextureType_SHININESS, 0, &str, 0, 0, 0, 0, 0, 0);
-
 					render_mtl.tex_names[RenderMaterial::TS_Glossiness] = str.C_Str();
 				}
 			}
@@ -486,7 +483,6 @@ namespace
 			{
 				aiString str;
 				aiGetMaterialTexture(mtl, aiTextureType_EMISSIVE, 0, &str, 0, 0, 0, 0, 0, 0);
-
 				render_mtl.tex_names[RenderMaterial::TS_Emissive] = str.C_Str();
 			}
 
@@ -495,8 +491,9 @@ namespace
 			{
 				aiString str;
 				aiGetMaterialTexture(mtl, aiTextureType_NORMALS, 0, &str, 0, 0, 0, 0, 0, 0);
-
 				render_mtl.tex_names[RenderMaterial::TS_Normal] = str.C_Str();
+
+				aiGetMaterialFloat(mtl, AI_MATKEY_GLTF_TEXTURE_SCALE(aiTextureType_NORMALS, 0), &render_mtl.normal_scale);
 			}
 
 			count = aiGetMaterialTextureCount(mtl, aiTextureType_HEIGHT);
@@ -504,8 +501,17 @@ namespace
 			{
 				aiString str;
 				aiGetMaterialTexture(mtl, aiTextureType_HEIGHT, 0, &str, 0, 0, 0, 0, 0, 0);
-
 				render_mtl.tex_names[RenderMaterial::TS_Height] = str.C_Str();
+			}
+
+			count = aiGetMaterialTextureCount(mtl, aiTextureType_LIGHTMAP);
+			if (count > 0)
+			{
+				aiString str;
+				aiGetMaterialTexture(mtl, aiTextureType_LIGHTMAP, 0, &str, 0, 0, 0, 0, 0, 0);
+				render_mtl.tex_names[RenderMaterial::TS_Occlusion] = str.C_Str();
+
+				aiGetMaterialFloat(mtl, AI_MATKEY_GLTF_TEXTURE_STRENGTH(aiTextureType_LIGHTMAP, 0), &render_mtl.occlusion_strength);
 			}
 
 			render_mtl.detail_mode = RenderMaterial::SDM_Parallax;
@@ -1597,7 +1603,7 @@ namespace
 							}
 						});
 
-						for (uint32_t i = 0; i < node.Children().size(); ++ i)
+						for (uint32_t i = 0; i < ai_node.mNumChildren; ++i)
 						{
 							ai_node.mChildren[i] = new aiNode;
 							ai_node.mChildren[i]->mParent = &ai_node;

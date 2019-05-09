@@ -153,6 +153,8 @@ namespace KlayGE
 				*alpha_test_threshold_param_ = mtl_ ? mtl_->alpha_test : 0;
 				*normal_map_enabled_param_ = static_cast<int32_t>(!!textures_[RenderMaterial::TS_Normal]);
 				*normal_tex_param_ = textures_[RenderMaterial::TS_Normal];
+				*normal_scale_param_ = mtl_ ? mtl_->normal_scale : 1;
+				*occlusion_strength_param_ = mtl_ ? mtl_->occlusion_strength : 1;
 				if (!mtl_ || (RenderMaterial::SDM_Parallax == mtl_->detail_mode))
 				{
 					*height_map_parallax_enabled_param_ = static_cast<int32_t>(!!textures_[RenderMaterial::TS_Height]);
@@ -186,6 +188,7 @@ namespace KlayGE
 				*emissive_clr_param_ = float4(
 					mtl_ ? mtl_->emissive.x() : 0, mtl_ ? mtl_->emissive.y() : 0, mtl_ ? mtl_->emissive.z() : 0,
 					static_cast<float>(!!textures_[RenderMaterial::TS_Emissive]));
+				*occlusion_strength_param_ = mtl_ ? mtl_->occlusion_strength : 1;
 				break;
 
 			case PT_OpaqueReflection:
@@ -201,6 +204,7 @@ namespace KlayGE
 				*emissive_clr_param_ = float4(
 					mtl_ ? mtl_->emissive.x() : 0, mtl_ ? mtl_->emissive.y() : 0, mtl_ ? mtl_->emissive.z() : 0,
 					static_cast<float>(!!textures_[RenderMaterial::TS_Emissive]));
+				*occlusion_strength_param_ = mtl_ ? mtl_->occlusion_strength : 1;
 				if (reflection_tex_param_)
 				{
 					*reflection_tex_param_ = drl->ReflectionTex(drl->ActiveViewport());
@@ -434,6 +438,8 @@ namespace KlayGE
 		opaque_depth_tex_param_ = deferred_effect_->ParameterByName("opaque_depth_tex");
 		reflection_tex_param_ = nullptr;
 		alpha_test_threshold_param_ = deferred_effect_->ParameterByName("alpha_test_threshold");
+		normal_scale_param_ = deferred_effect_->ParameterByName("normal_scale");
+		occlusion_strength_param_ = deferred_effect_->ParameterByName("occlusion_strength");
 		select_mode_object_id_param_ = deferred_effect_->ParameterByName("object_id");
 	}
 

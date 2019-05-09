@@ -334,6 +334,8 @@ namespace KlayGE
 		RenderEffectParameter* opaque_depth_tex_param_;
 		RenderEffectParameter* reflection_tex_param_;
 		RenderEffectParameter* alpha_test_threshold_param_;
+		RenderEffectParameter* normal_scale_param_;
+		RenderEffectParameter* occlusion_strength_param_;
 
 		std::array<ShaderResourceViewPtr, RenderMaterial::TS_NumTextureSlots> textures_;
 	};
