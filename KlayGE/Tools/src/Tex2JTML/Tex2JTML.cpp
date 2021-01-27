@@ -46,6 +46,8 @@
 #include <vector>
 #include <regex>
 
+#include <nonstd/scope.hpp>
+
 #ifndef KLAYGE_DEBUG
 #define CXXOPTS_NO_RTTI
 #endif
@@ -305,12 +307,15 @@ void Tex2JTML(std::vector<std::string>& tex_names, uint32_t num_tiles, uint32_t 
 
 int main(int argc, char* argv[])
 {
+	auto on_exit = nonstd::make_scope_exit([] { Context::Destroy(); });
+
 	int num_tiles;
 	int tile_size;
 	std::vector<std::string> tex_names;
 	std::string jtml_name;
 
-	cxxopts::Options options("ImageConv", "KlayGE Tex2JTML Generator");
+	cxxopts::Options options("Tex2JTML", "KlayGE Tex2JTML Generator");
+	// clang-format off
 	options.add_options()
 		("H,help", "Produce help message.")
 		("I,input-name", "Input textures names.", cxxopts::value<std::string>())
@@ -318,6 +323,7 @@ int main(int argc, char* argv[])
 		("N,num-tiles", "Number of tiles.", cxxopts::value<int>(num_tiles)->default_value("2048"))
 		("T,tile-size", "Tile size.", cxxopts::value<int>(tile_size)->default_value("128"))
 		("v,version", "Version.");
+	// clang-format on
 
 	int const argc_backup = argc;
 	auto vm = options.parse(argc, argv);
@@ -346,16 +352,16 @@ int main(int argc, char* argv[])
 			}
 			else
 			{
-				filesystem::path arg_path(arg.begin(), arg.end());
+				FILESYSTEM_NS::path arg_path(arg.begin(), arg.end());
 				auto const parent = arg_path.parent_path();
 				auto const file_name = arg_path.filename();
 
 				std::regex const filter(DosWildcardToRegex(file_name.string()));
 
-				filesystem::directory_iterator end_itr;
-				for (filesystem::directory_iterator i(parent); i != end_itr; ++ i)
+				FILESYSTEM_NS::directory_iterator end_itr;
+				for (FILESYSTEM_NS::directory_iterator i(parent); i != end_itr; ++i)
 				{
-					if (filesystem::is_regular_file(i->status()))
+					if (FILESYSTEM_NS::is_regular_file(i->status()))
 					{
 						std::smatch what;
 						std::string const name = i->path().filename().string();
@@ -385,8 +391,6 @@ int main(int argc, char* argv[])
 	}
 
 	Tex2JTML(tex_names, num_tiles, tile_size, jtml_name);
-
-	Context::Destroy();
 
 	return 0;
 }

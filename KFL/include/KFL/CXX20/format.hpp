@@ -1,10 +1,10 @@
 /**
- * @file CXX17.hpp
+ * @file format.hpp
  * @author Minmin Gong
  *
  * @section DESCRIPTION
  *
- * This source file is part of KFL, a subproject of KlayGE
+ * This source file is part of KlayGE
  * For the latest info, see http://www.klayge.org
  *
  * @section LICENSE
@@ -28,24 +28,50 @@
  * from http://www.klayge.org/licensing/.
  */
 
-#ifndef _KFL_CXX17_HPP
-#define _KFL_CXX17_HPP
+#ifndef KFL_CXX20_FORMAT_HPP
+#define KFL_CXX20_FORMAT_HPP
 
 #pragma once
 
-#ifdef KLAYGE_CXX17_CORE_IF_CONSTEXPR_SUPPORT
-	#define KLAYGE_IF_CONSTEXPR(x) if constexpr (x)
+#include <KFL/Config.hpp>
+
+#if defined(KLAYGE_CXX20_LIBRARY_FORMAT_SUPPORT)
+	#include <format>
 #else
-	#ifdef KLAYGE_COMPILER_MSVC
-	#pragma warning(disable: 4127)
-	#endif
-	#define KLAYGE_IF_CONSTEXPR(x) if (x)
+	#include <fmt/format.h>
+	namespace std
+	{
+		using fmt::format;
+		using fmt::format_to;
+		using fmt::format_to_n;
+		using fmt::formatted_size;
+
+		using fmt::vformat;
+		using fmt::vformat_to;
+
+		using fmt::basic_format_arg;
+
+		using fmt::formatter;
+
+		using fmt::basic_format_parse_context;
+		using fmt::format_parse_context;
+		using fmt::wformat_parse_context;
+
+		using fmt::basic_format_context;
+		using fmt::format_context;
+		using fmt::wformat_context;
+
+		using fmt::visit_format_arg;
+
+		using fmt::make_format_args;
+
+		using fmt::basic_format_args;
+		using fmt::format_args;
+		using fmt::wformat_args;
+		using fmt::format_args_t;
+
+		using fmt::format_error;
+	}
 #endif
 
-#ifdef KLAYGE_CXX17_CORE_STATIC_ASSERT_V2_SUPPORT
-	#define KLAYGE_STATIC_ASSERT(x) static_assert(x)
-#else
-	#define KLAYGE_STATIC_ASSERT(x) static_assert(x, #x)
-#endif
-
-#endif		// _KFL_CXX17_HPP
+#endif		// KFL_CXX20_FORMAT_HPP

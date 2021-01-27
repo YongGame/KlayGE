@@ -28,15 +28,15 @@
  * from http://www.klayge.org/licensing/.
  */
 
-#ifndef KLAYGE_TOOLS_IMAGE_CONV_IMAGE_PLANE_HPP
-#define KLAYGE_TOOLS_IMAGE_CONV_IMAGE_PLANE_HPP
+#ifndef KLAYGE_PLUGINS_IMAGE_PLANE_HPP
+#define KLAYGE_PLUGINS_IMAGE_PLANE_HPP
 
 #pragma once
 
 #include <KlayGE/PreDeclare.hpp>
-#include <KFL/CXX17/string_view.hpp>
 #include <KlayGE/ElementFormat.hpp>
 
+#include <string_view>
 #include <vector>
 
 #include <KlayGE/DevHelper/DevHelper.hpp>
@@ -83,4 +83,4 @@ namespace KlayGE
 	};
 }
 
-#endif		// KLAYGE_TOOLS_IMAGE_CONV_IMAGE_PLANE_HPP
+#endif		// KLAYGE_PLUGINS_IMAGE_PLANE_HPP

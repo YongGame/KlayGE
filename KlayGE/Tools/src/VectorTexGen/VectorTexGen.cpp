@@ -43,6 +43,8 @@
 #include <cstring>
 #include <atomic>
 
+#include <nonstd/scope.hpp>
+
 #ifndef KLAYGE_DEBUG
 #define CXXOPTS_NO_RTTI
 #endif
@@ -80,18 +82,22 @@ void Quantizer(std::vector<float> const & dist_data, uint8_t* quan_dist, uint32_
 
 int main(int argc, char* argv[])
 {
+	auto on_exit = nonstd::make_scope_exit([] { Context::Destroy(); });
+
 	std::string in_name;
 	std::string out_name;
 	uint32_t num_channels;
 	bool svg_input;
 
-	cxxopts::Options options("ImageConv", "KlayGE Vector Texture Converter");
+	cxxopts::Options options("VectorTexGen", "KlayGE Vector Texture Converter");
+	// clang-format off
 	options.add_options()
 		("H,help", "Produce help message.")
 		("I,input-name", "Input name (svg or dds).", cxxopts::value<std::string>())
 		("O,output-name", "Output name. Default is input-name.dds or svg, input-name.df.dds for dds.", cxxopts::value<std::string>())
 		("C,channels", "Number of channels.", cxxopts::value<uint32_t>(num_channels)->default_value("4"))
 		("v,version", "Version.");
+	// clang-format on
 
 	int const argc_backup = argc;
 	auto vm = options.parse(argc, argv);
@@ -156,7 +162,6 @@ int main(int argc, char* argv[])
 	if (ResLoader::Instance().Locate(in_name).empty())
 	{
 		std::cerr << "Could NOT find " << in_name << std::endl;
-		Context::Destroy();
 		return 1;
 	}
 
@@ -168,7 +173,6 @@ int main(int argc, char* argv[])
 		if (num_channels != 4)
 		{
 			std::cerr << "Unsupported channels. Must be 4 for svg." << std::endl;
-			Context::Destroy();
 			return 1;
 		}
 
@@ -176,7 +180,6 @@ int main(int argc, char* argv[])
 		if (!image)
 		{
 			std::cerr << "Could NOT open " << in_name << " as an SVG." << std::endl;
-			Context::Destroy();
 			return 1;
 		}
 
@@ -223,7 +226,6 @@ int main(int argc, char* argv[])
 		if (NumComponents(format) != num_channels)
 		{
 			std::cerr << "Unsupported pixel format. Must be " << num_channels << " channels." << std::endl;
-			Context::Destroy();
 			return 1;
 		}
 
@@ -287,5 +289,5 @@ int main(int argc, char* argv[])
 	out_tex->CreateHWResource(MakeSpan<1>(init_data), nullptr);
 	SaveTexture(out_tex, out_name);
 
-	Context::Destroy();
+	return 0;
 }

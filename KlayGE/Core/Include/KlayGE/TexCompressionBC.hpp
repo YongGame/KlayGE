@@ -47,35 +47,35 @@ namespace KlayGE
 		uint16_t clr_0, clr_1;
 		uint16_t bitmap[2];
 	};
-	KLAYGE_STATIC_ASSERT(sizeof(BC1Block) == 8);
+	static_assert(sizeof(BC1Block) == 8);
 
 	struct BC2Block
 	{
 		uint16_t alpha[4];
 		BC1Block bc1;
 	};
-	KLAYGE_STATIC_ASSERT(sizeof(BC2Block) == 16);
+	static_assert(sizeof(BC2Block) == 16);
 
 	struct BC4Block
 	{
 		uint8_t alpha_0, alpha_1;
 		uint8_t bitmap[6];
 	};
-	KLAYGE_STATIC_ASSERT(sizeof(BC4Block) == 8);
+	static_assert(sizeof(BC4Block) == 8);
 
 	struct BC3Block
 	{
 		BC4Block alpha;
 		BC1Block bc1;
 	};
-	KLAYGE_STATIC_ASSERT(sizeof(BC3Block) == 16);
+	static_assert(sizeof(BC3Block) == 16);
 
 	struct BC5Block
 	{
 		BC4Block red;
 		BC4Block green;
 	};
-	KLAYGE_STATIC_ASSERT(sizeof(BC5Block) == 16);
+	static_assert(sizeof(BC5Block) == 16);
 #ifdef KLAYGE_HAS_STRUCT_PACK
 #pragma pack(pop)
 #endif
@@ -264,8 +264,8 @@ namespace KlayGE
 			explicit CompressParams(uint32_t shape)
 				: rotation_mode(-1), index_mode(-1), shape_index(shape)
 			{
-				memset(p1, 0, sizeof(p1));
-				memset(p2, 0, sizeof(p2));
+				std::fill(std::begin(p1), std::end(p1), float4(0, 0, 0, 0));
+				std::fill(std::begin(p2), std::end(p2), float4(0, 0, 0, 0));
 				memset(indices, 0xFF, sizeof(indices));
 				memset(alpha_indices, 0xFF, sizeof(alpha_indices));
 				memset(pbit_combo, 0xFF, sizeof(pbit_combo));

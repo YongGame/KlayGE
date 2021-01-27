@@ -11,7 +11,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 #include <KlayGE/KlayGE.hpp>
-#include <KFL/CXX17.hpp>
 #include <KFL/ErrorHandling.hpp>
 #include <KFL/Util.hpp>
 #include <KFL/Math.hpp>
@@ -145,7 +144,7 @@ namespace KlayGE
 				"3.1",
 				"3.0"
 			};
-			KLAYGE_STATIC_ASSERT(std::size(all_version_names) == std::size(all_versions));
+			static_assert(std::size(all_version_names) == std::size(all_versions));
 
 			bool test_es_3_2 = true;
 			bool test_es_3_1 = true;
@@ -251,7 +250,7 @@ namespace KlayGE
 			EGL_CONTEXT_MINOR_VERSION, available_versions[0].second,
 			EGL_NONE
 		};
-		int test_version_index = 0;
+		size_t test_version_index = 0;
 		while ((nullptr == context_) && (test_version_index < available_versions.size()))
 		{
 			ctx_attr[1] = available_versions[test_version_index].first;

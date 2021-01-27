@@ -503,7 +503,7 @@ target_compile_definitions(${LIB_NAME}
 		-DKLAYGE_CORE_SOURCE
 )
 IF(KLAYGE_PLATFORM_DARWIN OR KLAYGE_PLATFORM_LINUX)
-	FIND_PATH(WINE_PATH "winegcc" #searching for 'wine' may result in include path
+	FIND_PATH(WINE_PATH "wineserver" #searching for 'wine' may result in include path
 		PATHS /usr/local/bin opt/local/sbin /usr/bin /bin /usr/sbin /sbin /usr/local/bin /usr/lib/wine)
 
 	IF(NOT WINE_PATH)
@@ -565,7 +565,7 @@ target_link_libraries(${LIB_NAME}
 if(KLAYGE_PLATFORM_WINDOWS)
 	target_link_libraries(${LIB_NAME}
 		PRIVATE
-			UniversalDXSDK
+			dxsdk
 			ws2_32
 	)
 elseif(KLAYGE_PLATFORM_DARWIN)
@@ -605,6 +605,11 @@ if(KLAYGE_PLATFORM_LINUX)
 	add_dependencies(${LIB_NAME} glloader)
 elseif(KLAYGE_PLATFORM_ANDROID)
 	add_dependencies(${LIB_NAME} android_native_app_glue)
+endif()
+if(KLAYGE_IS_DEV_PLATFORM)
+	if((NOT (KLAYGE_ARCH_NAME STREQUAL "arm")) AND (NOT (KLAYGE_ARCH_NAME STREQUAL "arm64")))
+		add_dependencies(${LIB_NAME} D3DCompilerRedist)
+	endif()
 endif()
 
 ADD_DEPENDENCIES(AllInEngine ${LIB_NAME})

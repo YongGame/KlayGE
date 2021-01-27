@@ -12,7 +12,7 @@
 
 #include <KlayGE/KlayGE.hpp>
 
-#include <KFL/CXX2a/format.hpp>
+#include <KFL/CXX20/format.hpp>
 #include <KlayGE/Context.hpp>
 #include <KlayGE/ResLoader.hpp>
 #include <KFL/Util.hpp>
@@ -24,6 +24,8 @@
 #include <iterator>
 #include <sstream>
 #include <string>
+
+#include <nonstd/scope.hpp>
 
 #include "resource.h"
 
@@ -876,6 +878,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszCmdLine*/, int /*nCmdShow*/)
 #endif
 {
+	auto on_exit = nonstd::make_scope_exit([] { Context::Destroy(); });
+
 	std::string cfg_path = ResLoader::Instance().Locate("KlayGE.cfg");
 	Context::Instance().LoadCfg(cfg_path);
 	cfg = Context::Instance().Config();
@@ -885,8 +889,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lps
 		Context::Instance().Config(cfg);
 		Context::Instance().SaveCfg(cfg_path);
 	}
-
-	Context::Destroy();
 
 	return 0;
 }

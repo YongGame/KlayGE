@@ -29,7 +29,6 @@
  */
 
 #include <KlayGE/KlayGE.hpp>
-#include <KFL/CXX17.hpp>
 #include <KFL/ErrorHandling.hpp>
 #include <KFL/Util.hpp>
 #include <KFL/Hash.hpp>
@@ -40,7 +39,7 @@
 #include <KlayGE/RenderSettings.hpp>
 #include <KlayGE/App3D.hpp>
 #include <KlayGE/Window.hpp>
-#include <KFL/CXX2a/span.hpp>
+#include <KFL/CXX20/span.hpp>
 
 #include <cstring>
 #include <iterator>
@@ -146,7 +145,7 @@ namespace KlayGE
 					CT_HASH("11_1"),
 					CT_HASH("11_0")
 				};
-				KLAYGE_STATIC_ASSERT(std::size(feature_level_name_hashes) == std::size(all_feature_levels));
+				static_assert(std::size(feature_level_name_hashes) == std::size(all_feature_levels));
 
 				uint32_t feature_level_start_index = 0;
 				for (size_t index = 0; index < settings.options.size(); ++ index)
@@ -169,7 +168,7 @@ namespace KlayGE
 				feature_levels = MakeSpan(all_feature_levels).subspan(feature_level_start_index);
 			}
 
-			for (int i = 0; i < feature_levels.size(); ++ i)
+			for (size_t i = 0; i < feature_levels.size(); ++i)
 			{
 				if (SUCCEEDED(D3D12InterfaceLoader::Instance().D3D12CreateDevice(adapter_->DXGIAdapter(),
 						feature_levels[i], IID_ID3D12Device, d3d_device.put_void())))

@@ -199,13 +199,14 @@ int main(int argc, char* argv[])
 	app.Create();
 
 	std::string input_name;
-	filesystem::path target_folder;
+	FILESYSTEM_NS::path target_folder;
 	uint32_t azimuth;
 	uint32_t elevation;
 	uint32_t size;
 	bool quiet = false;
 
-	cxxopts::Options options("ImageConv", "KlayGE Imposter Generator");
+	cxxopts::Options options("ImposterGen", "KlayGE Imposter Generator");
+	// clang-format off
 	options.add_options()
 		("H,help", "Produce help message")
 		("I,input-name", "Input mesh name.", cxxopts::value<std::string>())
@@ -215,6 +216,7 @@ int main(int argc, char* argv[])
 		("S,size", "Size of each imposter.", cxxopts::value<uint32_t>(size)->default_value("256"))
 		("q,quiet", "Quiet mode.", cxxopts::value<bool>()->implicit_value("true"))
 		("v,version", "Version.");
+	// clang-format on
 
 	int const argc_backup = argc;
 	auto vm = options.parse(argc, argv);
@@ -247,7 +249,7 @@ int main(int argc, char* argv[])
 	std::string meshml_name = ResLoader::Instance().Locate(input_name);
 
 	std::string file_name;
-	filesystem::path meshml_path(meshml_name);
+	FILESYSTEM_NS::path meshml_path(meshml_name);
 	if (target_folder.empty())
 	{
 		target_folder = meshml_path.parent_path();

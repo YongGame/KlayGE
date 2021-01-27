@@ -1,0 +1,247 @@
+variables:
+  configuration: Release
+  platform: x64
+
+resources:
+- repo: self
+  fetchDepth: 1
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    strategy:
+      matrix:
+        Windows_vc142:
+          vmImage: windows-2019
+          project: vs2019
+          compiler: vc142
+          installCommand: ''
+          id: 'vc142_win_$(platform)_$(configuration)'
+          BUILD_DIR: vc142
+
+        Windows_vc141:
+          vmImage: VS2017-Win2016
+          project: vs2017
+          compiler: vc141
+          installCommand: ''
+          id: 'vc141_win_$(platform)_$(configuration)'
+          BUILD_DIR: vc141
+
+        Windows_clangcl10:
+          vmImage: windows-2019
+          project: vs2019
+          compiler: clangcl
+          installCommand: ''
+          id: 'clangcl10_win_$(platform)_$(configuration)'
+          BUILD_DIR: clangcl10
+
+        Windows_gcc10:
+          vmImage: windows-2019
+          project: ninja
+          compiler: mingw
+          installCommand: 'choco install ninja'
+          id: 'gcc10_win_$(platform)_$(configuration)'
+          BUILD_DIR: mingw
+
+        Linux_gcc9:
+          vmImage: Ubuntu-18.04
+          project: ninja
+          compiler: gcc
+          installCommand: |
+            sudo dpkg --add-architecture i386
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+            sudo apt-get update
+            sudo apt-get install g++-9 ninja-build wine64 wine64-tools libwine-dev winetricks libx11-dev libgl1-mesa-dev
+            export WINEARCH=win32
+            winetricks
+          id: 'gcc9_linux_$(platform)_$(configuration)'
+          CC: gcc-9
+          CXX: g++-9
+          BUILD_DIR: gcc9
+
+        Linux_gcc10:
+          vmImage: Ubuntu-18.04
+          project: ninja
+          compiler: gcc
+          installCommand: |
+            sudo dpkg --add-architecture i386
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+            sudo apt-get update
+            sudo apt-get install g++-10 ninja-build wine64 wine64-tools libwine-dev winetricks libx11-dev libgl1-mesa-dev
+            export WINEARCH=win32
+            winetricks
+          id: 'gcc10_linux_$(platform)_$(configuration)'
+          CC: gcc-10
+          CXX: g++-10
+          BUILD_DIR: gcc10
+
+        Linux_clang10:
+          vmImage: Ubuntu-18.04
+          project: ninja
+          compiler: clang
+          installCommand: |
+            sudo dpkg --add-architecture i386
+            wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+            sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+            sudo apt-get update
+            sudo apt-get install clang-10 libc++-10-dev libc++abi-10-dev lld-10 ninja-build wine64 wine64-tools libwine-dev winetricks libx11-dev libgl1-mesa-dev
+            export WINEARCH=win32
+            winetricks
+          id: 'clang10_linux_$(platform)_$(configuration)'
+          CC: clang-10
+          CXX: clang++-10
+          BUILD_DIR: clang10
+
+        Linux_clang11:
+          vmImage: Ubuntu-18.04
+          project: ninja
+          compiler: clang
+          installCommand: |
+            sudo dpkg --add-architecture i386
+            wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+            sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-11 main"
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+            sudo apt-get update
+            sudo apt-get install clang-11 libc++-11-dev libc++abi-11-dev lld-11 ninja-build wine64 wine64-tools libwine-dev winetricks libx11-dev libgl1-mesa-dev
+            export WINEARCH=win32
+            winetricks
+          id: 'clang11_linux_$(platform)_$(configuration)'
+          CC: clang-11
+          CXX: clang++-11
+          BUILD_DIR: clang11
+
+        macOS_clang11:
+          vmImage: macOS-10.14
+          project: ninja
+          compiler: clang
+          installCommand: |
+            export HOMEBREW_NO_INSTALL_CLEANUP=1
+            brew install --cask xquartz wine-stable
+            brew install ninja mingw-w64
+          id: 'clang11_darwin_$(platform)_$(configuration)'
+          BUILD_DIR: clang11
+          MACOSX_DEPLOYMENT_TARGET: 10.14
+
+        macOS_clang12:
+          vmImage: macOS-10.15
+          project: ninja
+          compiler: clang
+          installCommand: |
+            export HOMEBREW_NO_INSTALL_CLEANUP=1
+            brew install --cask xquartz wine-stable
+            brew install ninja mingw-w64
+          id: 'clang12_darwin_$(platform)_$(configuration)'
+          BUILD_DIR: clang12
+          MACOSX_DEPLOYMENT_TARGET: 10.15
+
+    pool:
+      vmImage: $(vmImage)
+
+    steps:
+      - bash: eval '$(installCommand)'
+        displayName: 'Install'
+        condition: ne(variables.installCommand, '')
+
+      - pwsh: |
+          $mingwPath = "C:\msys64\mingw64\bin"
+          Write-Host "##vso[task.setvariable variable=PATH;]$mingwPath;${env:PATH}";
+        displayName: 'Config msys2 PATH'
+        condition: eq(variables.compiler, 'mingw')
+
+      - task: Cache@2
+        inputs:
+          key: 'Build | External/Build/**/CMakeLists.txt | $(id)'
+          restoreKeys: 'Build | $(id)'
+          path: Build/$(BUILD_DIR)
+        displayName: Cache Build
+
+      - task: Cache@2
+        inputs:
+          key: 'External | External/Build/**/CMakeLists.txt | $(id)'
+          restoreKeys: |
+            External | External/Build/**/CMakeLists.txt
+            External
+          path: External
+        displayName: Cache External
+
+      - task: Cache@2
+        inputs:
+          key: 'KlayGE_media | KlayGE/Build/CMake/Engine/Core/CMakeLists.txt'
+          restoreKeys: 'KlayGE_media'
+          path: KlayGE/media
+        displayName: Cache KlayGE/media
+
+      - task: Cache@2
+        inputs:
+          key: 'KlayGE_Samples_media | KlayGE/Build/CMake/Samples/**/CMakeLists.txt'
+          restoreKeys: 'KlayGE_Samples_media'
+          path: KlayGE/Samples/media
+        displayName: Cache KlayGE/Samples/media
+
+      - task: Cache@2
+        inputs:
+          key: 'KlayGE_Tests_media | KlayGE/Build/CMake/Tests/CMakeLists.txt'
+          restoreKeys: 'KlayGE_Tests_media'
+          path: KlayGE/Tests/media
+        displayName: Cache KlayGE/Tests/media
+
+      - task: Cache@2
+        inputs:
+          key: 'KlayGE_Tools_media | KlayGE/Build/CMake/Tools/**/CMakeLists.txt'
+          restoreKeys: 'KlayGE_Tools_media'
+          path: KlayGE/Tools/media
+        displayName: Cache KlayGE/Tools/media
+
+      - task: Cache@2
+        inputs:
+          key: 'KlayGE_Tutorials_media | KlayGE/Build/CMake/Tutorials/**/CMakeLists.txt'
+          restoreKeys: 'KlayGE_Tutorials_media'
+          path: KlayGE/Tutorials/media
+        displayName: Cache KlayGE/Tutorials/media
+
+      - script: |
+          git config --global user.email "dummy@example.com"
+          git config --global user.name "Dummy Name"
+          # Reset the repo to restore changes in External
+          git reset --hard
+        displayName: 'Config git'
+
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.x'
+          addToPath: true
+          architecture: 'x64'
+  
+      - task: PythonScript@0
+        displayName: 'Build'
+        inputs:
+          scriptPath: Build.py
+          arguments: '$(project) $(compiler) $(platform) $(configuration)'
+
+      - task: PythonScript@0
+        displayName: 'Generate artifacts'
+        inputs:
+          scriptPath: Package.py
+          arguments: '$(Build.ArtifactStagingDirectory) $(project) $(compiler) $(platform) $(configuration)'
+        condition: succeeded()
+
+      - bash: 'echo $BUILD_SOURCEVERSION > $BUILD_ARTIFACTSTAGINGDIRECTORY/GIT-COMMIT.txt'
+        displayName: 'Add commit info'
+        condition: succeeded()
+
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish artifacts'
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: KlayGE_Samples_$(id)
+        condition: succeeded()
+
+      - bash: |
+          rm -rf Build/$(BUILD_DIR)/DXBC2GLSL
+          rm -rf Build/$(BUILD_DIR)/glloader
+          rm -rf Build/$(BUILD_DIR)/KFL
+          rm -rf Build/$(BUILD_DIR)/kfont
+          rm -rf Build/$(BUILD_DIR)/KlayGE
+        displayName: 'Remove build files'

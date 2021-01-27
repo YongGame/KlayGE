@@ -8,12 +8,18 @@ IF(KLAYGE_PLATFORM_WINDOWS)
 
 	target_link_libraries(D3DCompilerWrapper
 		PRIVATE
-			UniversalDXSDK
+			dxsdk
 	)
 ELSE()
 	FIND_PACKAGE(PythonInterp)
 
-	FIND_PATH(WINEGCC_PATH "winegcc"
+	if(KLAYGE_PLATFORM_DARWIN)
+		set(winegcc "x86_64-w64-mingw32-gcc") # Use MinGW-w64 as a workaround
+	elseif(KLAYGE_PLATFORM_LINUX)
+		set(winegcc "winegcc")
+	endif()
+
+	FIND_PATH(WINEGCC_PATH ${winegcc}
 		PATHS /usr/local/bin opt/local/sbin /usr/bin /bin /usr/sbin /sbin /usr/local/bin)
 
 	IF(NOT WINEGCC_PATH)

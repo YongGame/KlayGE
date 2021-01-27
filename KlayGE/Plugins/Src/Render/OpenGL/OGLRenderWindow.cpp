@@ -21,7 +21,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 #include <KlayGE/KlayGE.hpp>
-#include <KFL/CXX17.hpp>
 #include <KFL/ErrorHandling.hpp>
 #include <KFL/Util.hpp>
 #include <KFL/Math.hpp>
@@ -32,7 +31,7 @@
 #include <KlayGE/RenderEngine.hpp>
 #include <KlayGE/App3D.hpp>
 #include <KlayGE/Window.hpp>
-#include <KFL/CXX2a/span.hpp>
+#include <KFL/CXX20/span.hpp>
 
 #include <iterator>
 #include <map>
@@ -93,7 +92,7 @@ namespace KlayGE
 				"4.2",
 				"4.1"
 			};
-			KLAYGE_STATIC_ASSERT(std::size(all_version_names) == std::size(all_versions));
+			static_assert(std::size(all_version_names) == std::size(all_versions));
 
 			uint32_t version_start_index = 0;
 			for (size_t index = 0; index < settings.options.size(); ++ index)
@@ -322,7 +321,7 @@ namespace KlayGE
 				WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
 				0
 			};
-			for (int i = 0; i < available_versions.size(); ++ i)
+			for (size_t i = 0; i < available_versions.size(); ++i)
 			{
 				attribs[1] = available_versions[i].first;
 				attribs[3] = available_versions[i].second;
@@ -377,7 +376,7 @@ namespace KlayGE
 				GLX_CONTEXT_MINOR_VERSION_ARB, 0,
 				0
 			};
-			for (int i = 0; i < available_versions.size(); ++ i)
+			for (size_t i = 0; i < available_versions.size(); ++ i)
 			{
 				attribs[1] = available_versions[i].first;
 				attribs[3] = available_versions[i].second;

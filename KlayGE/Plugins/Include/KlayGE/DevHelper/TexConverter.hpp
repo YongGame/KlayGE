@@ -28,15 +28,15 @@
  * from http://www.klayge.org/licensing/.
  */
 
-#ifndef KLAYGE_TOOLS_TOOL_COMMON_TEX_CONVERTER_HPP
-#define KLAYGE_TOOLS_TOOL_COMMON_TEX_CONVERTER_HPP
+#ifndef KLAYGE_PLUGINS_TEX_CONVERTER_HPP
+#define KLAYGE_PLUGINS_TEX_CONVERTER_HPP
 
 #pragma once
 
 #include <KlayGE/PreDeclare.hpp>
-#include <KFL/CXX17/string_view.hpp>
 #include <KlayGE/ElementFormat.hpp>
 
+#include <string_view>
 #include <vector>
 
 #include <KlayGE/DevHelper/DevHelper.hpp>
@@ -49,11 +49,12 @@ namespace KlayGE
 	public:
 		TexturePtr Load(std::string_view input_name, TexMetadata const & metadata);
 
-		void GetImageInfo(std::string_view input_name, TexMetadata const & metadata,
-			Texture::TextureType& type,
-			uint32_t& width, uint32_t& height, uint32_t& depth, uint32_t& num_mipmaps, uint32_t& array_size,
-			ElementFormat& format, uint32_t& row_pitch, uint32_t& slice_pitch);
+		static void GetImageInfo(std::string_view input_name, TexMetadata const& metadata, Texture::TextureType& type, uint32_t& width,
+			uint32_t& height, uint32_t& depth, uint32_t& num_mipmaps, uint32_t& array_size, ElementFormat& format, uint32_t& row_pitch,
+			uint32_t& slice_pitch);
+
+		static bool IsSupported(std::string_view input_name);
 	};
 }
 
-#endif		// KLAYGE_TOOLS_TOOL_COMMON_TEX_CONVERTER_HPP
+#endif		// KLAYGE_PLUGINS_TEX_CONVERTER_HPP

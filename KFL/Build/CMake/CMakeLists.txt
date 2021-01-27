@@ -8,15 +8,12 @@ SET(BASE_DETAIL_HEADER_FILES
 	${KFL_PROJECT_DIR}/include/KFL/Detail/AutoLink.hpp
 )
 SET(BASE_CXX17_HEADER_FILES
-	${KFL_PROJECT_DIR}/include/KFL/CXX17/any.hpp
 	${KFL_PROJECT_DIR}/include/KFL/CXX17/filesystem.hpp
-	${KFL_PROJECT_DIR}/include/KFL/CXX17/optional.hpp
-	${KFL_PROJECT_DIR}/include/KFL/CXX17/string_view.hpp
 )
-SET(BASE_CXX2a_HEADER_FILES
-	${KFL_PROJECT_DIR}/include/KFL/CXX2a/endian.hpp
-	${KFL_PROJECT_DIR}/include/KFL/CXX2a/format.hpp
-	${KFL_PROJECT_DIR}/include/KFL/CXX2a/span.hpp
+SET(BASE_CXX20_HEADER_FILES
+	${KFL_PROJECT_DIR}/include/KFL/CXX20/bit.hpp
+	${KFL_PROJECT_DIR}/include/KFL/CXX20/format.hpp
+	${KFL_PROJECT_DIR}/include/KFL/CXX20/span.hpp
 )
 SET(BASE_HEADER_FILES
 	${KFL_PROJECT_DIR}/include/KFL/AlignedAllocator.hpp
@@ -26,7 +23,6 @@ SET(BASE_HEADER_FILES
 	${KFL_PROJECT_DIR}/include/KFL/Config.hpp
 	${KFL_PROJECT_DIR}/include/KFL/CpuInfo.hpp
 	${KFL_PROJECT_DIR}/include/KFL/CustomizedStreamBuf.hpp
-	${KFL_PROJECT_DIR}/include/KFL/CXX17.hpp
 	${KFL_PROJECT_DIR}/include/KFL/DllLoader.hpp
 	${KFL_PROJECT_DIR}/include/KFL/ErrorHandling.hpp
 	${KFL_PROJECT_DIR}/include/KFL/Hash.hpp
@@ -100,12 +96,12 @@ SOURCE_GROUP("Base\\Source Files" FILES ${BASE_SOURCE_FILES})
 SOURCE_GROUP("Base\\Header Files" FILES ${BASE_HEADER_FILES})
 SOURCE_GROUP("Base\\Header Files\\Detail" FILES ${BASE_DETAIL_HEADER_FILES})
 SOURCE_GROUP("Base\\Header Files\\CXX17" FILES ${BASE_CXX17_HEADER_FILES})
-SOURCE_GROUP("Base\\Header Files\\CXX2a" FILES ${BASE_CXX2a_HEADER_FILES})
+SOURCE_GROUP("Base\\Header Files\\CXX20" FILES ${BASE_CXX20_HEADER_FILES})
 SOURCE_GROUP("Math\\Source Files" FILES ${MATH_SOURCE_FILES})
 SOURCE_GROUP("Math\\Header Files" FILES ${MATH_HEADER_FILES})
 
 ADD_LIBRARY(${LIB_NAME} STATIC
-	${BASE_SOURCE_FILES} ${BASE_HEADER_FILES} ${BASE_DETAIL_HEADER_FILES} ${BASE_CXX17_HEADER_FILES} ${BASE_CXX2a_HEADER_FILES}
+	${BASE_SOURCE_FILES} ${BASE_HEADER_FILES} ${BASE_DETAIL_HEADER_FILES} ${BASE_CXX17_HEADER_FILES} ${BASE_CXX20_HEADER_FILES}
 	${MATH_SOURCE_FILES} ${MATH_HEADER_FILES}
 )
 
@@ -152,9 +148,9 @@ target_link_libraries(${LIB_NAME}
 		Boost::assert
 		Boost::core
 		fmt
-		optional-lite
-		string-view-lite
 		GSL
+		scope-lite
+		bit-lite
 
 	PRIVATE
 		rapidxml
@@ -177,22 +173,10 @@ if(KLAYGE_COMPILER_MSVC OR KLAYGE_COMPILER_CLANGCL)
 		)
 	endif()
 else()
-	if(KLAYGE_COMPILER_GCC AND (NOT KLAYGE_PLATFORM_WINDOWS OR NOT (KLAYGE_COMPILER_VERSION EQUAL 81)))
+	if(KLAYGE_COMPILER_GCC)
 		target_link_libraries(${LIB_NAME}
 			PUBLIC
 				stdc++fs
 		)
-	elseif(KLAYGE_COMPILER_CLANG AND KLAYGE_PLATFORM_LINUX)
-		if(KLAYGE_COMPILER_VERSION LESS 70)
-			target_link_libraries(${LIB_NAME}
-				PUBLIC
-					c++experimental
-			)
-		elseif(KLAYGE_COMPILER_VERSION LESS 90)
-			target_link_libraries(${LIB_NAME}
-				PUBLIC
-					c++fs
-			)
-		endif()
 	endif()
 endif()

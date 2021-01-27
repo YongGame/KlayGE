@@ -14,6 +14,8 @@
 
 #include <boost/assert.hpp>
 
+#include <nonstd/scope.hpp>
+
 using namespace std;
 
 namespace
@@ -433,9 +435,11 @@ int main(int argc, char* argv[])
 {
 	using namespace KlayGE;
 
+	auto on_exit = nonstd::make_scope_exit([] { Context::Destroy(); });
+
 	if (argc < 2)
 	{
-		cout << "Usage: HDRCompressor xxx.dds [R16 | R16F] [BC5 | BC3]" << endl;
+		cout << "Usage: HDRCompressor xxx.dds [R16 | R16F] [BC5 | BC3] [dest-folder]" << endl;
 		return 1;
 	}
 
@@ -459,15 +463,24 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	filesystem::path output_path(argv[1]);
-	std::string y_file = output_path.stem().string() + "_y" + output_path.extension().string();
-	std::string c_file = output_path.stem().string() + "_c" + output_path.extension().string();
+	FILESYSTEM_NS::path output_path(argv[1]);
+	FILESYSTEM_NS::path dest_folder;
+	if (argc >= 5)
+	{
+		dest_folder = argv[4];
+	}
+	else
+	{
+		dest_folder = output_path.parent_path();
+	}
+
+	std::string const base_name = (dest_folder / output_path.stem()).string();
+	std::string y_file = base_name + "_y" + output_path.extension().string();
+	std::string c_file = base_name + "_c" + output_path.extension().string();
 
 	CompressHDR(argv[1], y_file, c_file, y_format, c_format);
 
 	cout << "HDR texture is compressed into " << y_file << " and " << c_file << endl;
-
-	Context::Destroy();
 
 	return 0;
 }

@@ -31,7 +31,7 @@
 #include <KlayGE/KlayGE.hpp>
 
 #include <KFL/CXX17/filesystem.hpp>
-#include <KFL/CXX2a/format.hpp>
+#include <KFL/CXX20/format.hpp>
 #include <KFL/ErrorHandling.hpp>
 #include <KFL/Hash.hpp>
 #include <KFL/Math.hpp>
@@ -44,7 +44,7 @@
 #include <cstring>
 #include <iostream>
 
-#if defined(KLAYGE_COMPILER_GCC) && (KLAYGE_COMPILER_VERSION >= 90)
+#if defined(KLAYGE_COMPILER_GCC)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-copy" // Ignore comparison between int and uint
 #endif
@@ -215,6 +215,7 @@ namespace
 	{
 	public:
 		RenderModelPtr Load(std::string_view input_name, MeshMetadata const & metadata);
+		bool IsSupported(std::string_view input_name) const;
 
 	private:
 		void RemoveUnusedJoints();
@@ -1166,7 +1167,7 @@ namespace
 
 	void MeshSaver::Save(RenderModel const & model, std::string_view output_name)
 	{
-		std::filesystem::path output_path(output_name.begin(), output_name.end());
+		FILESYSTEM_NS::path output_path(output_name.begin(), output_name.end());
 
 		auto const output_ext = output_path.extension().string();
 		if (output_ext == ".model_bin")
@@ -1181,7 +1182,7 @@ namespace
 
 	void MeshSaver::SaveByAssimp(RenderModel const & model, std::string_view output_name)
 	{
-		std::filesystem::path const output_path(output_name.begin(), output_name.end());
+		FILESYSTEM_NS::path const output_path(output_name.begin(), output_name.end());
 		auto const output_ext = output_path.extension();
 
 		bool const is_gltf = (output_ext == ".gltf") || (output_ext == ".glb");
@@ -3536,7 +3537,7 @@ namespace
 			return RenderModelPtr();
 		}
 
-		std::filesystem::path input_path(input_name_str);
+		FILESYSTEM_NS::path input_path(input_name_str);
 		auto const in_folder = input_path.parent_path().string();
 		bool const in_path = ResLoader::Instance().IsInPath(in_folder);
 		if (!in_path)
@@ -3979,6 +3980,33 @@ namespace
 
 		return render_model_;
 	}
+
+	bool MeshLoader::IsSupported(std::string_view input_name) const
+	{
+		std::string const input_name_str = ResLoader::Instance().Locate(input_name);
+		if (input_name_str.empty())
+		{
+			LogError() << "Could NOT find " << input_name << '.' << std::endl;
+			return false;
+		}
+
+		FILESYSTEM_NS::path input_path(input_name_str);
+		auto input_ext = input_path.extension().string();
+		StringUtil::ToLower(input_ext);
+		if ((input_ext == ".model_bin") || (input_ext == ".meshml"))
+		{
+			return true;
+		}
+		else
+		{
+			input_ext = "*" + input_ext + ";";
+
+			Assimp::Importer importer;
+			std::string ext_list;
+			importer.GetExtensionList(ext_list);
+			return ext_list.find(input_ext) != std::string::npos;
+		}
+	}
 }
 
 #if defined(KLAYGE_COMPILER_GCC)
@@ -3997,6 +4025,12 @@ namespace KlayGE
 	{
 		MeshSaver ms;
 		ms.Save(model, output_name);
+	}
+
+	bool MeshConverter::IsSupported(std::string_view input_name)
+	{
+		MeshLoader ml;
+		return ml.IsSupported(input_name);
 	}
 }
 

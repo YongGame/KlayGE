@@ -1,31 +1,31 @@
 SET(BOOST_PROJECT_DIR "${EXTERNAL_PROJECT_DIR}/boost")
 
-UpdateExternalLib("boost/assert" "https://github.com/boostorg/assert.git" "35c31e7778cd5e02cdcdea7bedce4c7f8d767803")
-UpdateExternalLib("boost/container" "https://github.com/boostorg/container.git" "f73fb1442a0d714e97506b6fa86f5a1f16da7ddc")
-UpdateExternalLib("boost/core" "https://github.com/boostorg/core.git" "690514e87cde26f656cdd75b96aba03c8abcb398")
-UpdateExternalLib("boost/type_index" "https://github.com/boostorg/type_index.git" "f2e395a7f3fc3527b82487e7f728d6cb33328f8a")
-UpdateExternalLib("boost/utility" "https://github.com/boostorg/utility.git" "86e7caefea0ed6557a25823a547c01b51ace1a99")
+UpdateExternalLib("boost/assert" "https://github.com/boostorg/assert.git" "2cd99e24e834d600d51cf3b8cdc3df6ecfd8e9f1")
+UpdateExternalLib("boost/container" "https://github.com/boostorg/container.git" "8a2444201ac4856e77b46220cb91beb8e8b3c34d")
+UpdateExternalLib("boost/core" "https://github.com/boostorg/core.git" "ca4893063fa244a690b1f799328f16408b794c77")
+UpdateExternalLib("boost/type_index" "https://github.com/boostorg/type_index.git" "9862011b6b5e900eee31d32684766c15d3506adf")
+UpdateExternalLib("boost/utility" "https://github.com/boostorg/utility.git" "37168a3f4b455588cc63ead1d861d6129c7f63fa")
 
-# Depended by assert, container_hash, core, integer, intrusive, move, static_assert, throw_exception, type_index
-UpdateExternalLib("boost/config" "https://github.com/boostorg/config.git" "b9eac83cb30c5f0707d44ee1dddfe179973995f2")
-# Depended by container, type_index, utility
-UpdateExternalLib("boost/container_hash" "https://github.com/boostorg/container_hash.git" "8a7fc581ed987fde8cae4e7145378d23b9b6b351")
+# Depended by assert, container, container_hash, core, detail, integer, intrusive, move, static_assert, throw_exception, type_index, type_traits, utility
+UpdateExternalLib("boost/config" "https://github.com/boostorg/config.git" "fad75493bd2da03524854976f2d80dd7989c90fb")
+# Depended by container, intrusive, type_index, utility
+UpdateExternalLib("boost/container_hash" "https://github.com/boostorg/container_hash.git" "171c012d4723c5e93cc7cffe42919afdf8b27dfa")
 # Depended by container_hash
-UpdateExternalLib("boost/detail" "https://github.com/boostorg/detail.git" "8dbbfe372b83f7ff32d545bad1c779348bfe3eea")
-# Depended by container, container_hash
-UpdateExternalLib("boost/integer" "https://github.com/boostorg/integer.git" "bee5818e18cf33f06f776556fdacec694c0259d1")
+UpdateExternalLib("boost/detail" "https://github.com/boostorg/detail.git" "5d285a2d5a561308ad6703e1ff284d106eb01032")
+# Depended by container_hash
+UpdateExternalLib("boost/integer" "https://github.com/boostorg/integer.git" "54dcfa677d8883d0bc7179f32cb806d89d4f8e40")
 # Depended by container
-UpdateExternalLib("boost/intrusive" "https://github.com/boostorg/intrusive.git" "d8761780b0386c53ab144173a5fdc536ee2e1da8")
+UpdateExternalLib("boost/intrusive" "https://github.com/boostorg/intrusive.git" "cb3752dbb1f2e95d28adc541a0e2f4ae72e196a5")
 # Depended by container, intrusive
-UpdateExternalLib("boost/move" "https://github.com/boostorg/move.git" "48243ffc035c09794f7a3c3f0588b3c1ca043817")
-# Depended by detail, type_index, type_traits, utility
-UpdateExternalLib("boost/preprocessor" "https://github.com/boostorg/preprocessor.git" "9cf66925d40bd4a5ac618c21418e430f76761864")
+UpdateExternalLib("boost/move" "https://github.com/boostorg/move.git" "4a60a8eb0660ac83fdb4886c1eb60dc6e6a4b2ca")
+# Depended by detail, type_index, utility
+UpdateExternalLib("boost/preprocessor" "https://github.com/boostorg/preprocessor.git" "5e17804af2496e13ca0cc03d892b5351b637ea43")
 # Depended by container, container_hash, detail, integer, intrusive, move, type_index, type_traits, utility
-UpdateExternalLib("boost/static_assert" "https://github.com/boostorg/static_assert.git" "9102d749337c96e9dd62de1132d45d900e5f184a")
+UpdateExternalLib("boost/static_assert" "https://github.com/boostorg/static_assert.git" "073c48260658b799e67d56f117ef4ada09f66e06")
 # Depended by integer, type_index, utility
-UpdateExternalLib("boost/throw_exception" "https://github.com/boostorg/throw_exception.git" "548084bd4c868325dbf3d1c0bd8947083fd08a02")
+UpdateExternalLib("boost/throw_exception" "https://github.com/boostorg/throw_exception.git" "da6f5420fe7e96f673ee185c2ff37cbaa3f95b84")
 # Depended by container, container_hash, detail, type_index, utility
-UpdateExternalLib("boost/type_traits" "https://github.com/boostorg/type_traits.git" "7ee9910b2f13611ffb9b7fe95410e7ad763e9a62")
+UpdateExternalLib("boost/type_traits" "https://github.com/boostorg/type_traits.git" "c6c7ff164789e7ca1d71745714cb27fae956360b")
 
 add_subdirectory(${BOOST_PROJECT_DIR}/assert "${CMAKE_CURRENT_BINARY_DIR}/boost/assert" EXCLUDE_FROM_ALL)
 add_subdirectory(${BOOST_PROJECT_DIR}/container "${CMAKE_CURRENT_BINARY_DIR}/boost/container" EXCLUDE_FROM_ALL)

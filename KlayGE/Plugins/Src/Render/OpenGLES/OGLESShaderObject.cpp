@@ -30,8 +30,7 @@
 
 #include <KlayGE/KlayGE.hpp>
 
-#include <KFL/CXX17/string_view.hpp>
-#include <KFL/CXX2a/format.hpp>
+#include <KFL/CXX20/format.hpp>
 #include <KFL/ErrorHandling.hpp>
 #include <KFL/Util.hpp>
 #include <KFL/ResIdentifier.hpp>
@@ -44,11 +43,12 @@
 #include <KFL/CustomizedStreamBuf.hpp>
 #include <KFL/Hash.hpp>
 
-#include <cstdio>
-#include <string>
 #include <algorithm>
+#include <cstdio>
 #include <cstring>
 #include <map>
+#include <string>
+#include <string_view>
 
 #include <boost/assert.hpp>
 
@@ -1224,7 +1224,7 @@ namespace KlayGE
 			bool const tfb_separate_attribs = tfb_stage->TfbSeparateAttribs();
 
 			std::vector<GLchar const*> names(glsl_tfb_varyings.size());
-			for (int i = 0; i < glsl_tfb_varyings.size(); ++i)
+			for (size_t i = 0; i < glsl_tfb_varyings.size(); ++i)
 			{
 				names[i] = glsl_tfb_varyings[i].c_str();
 			}

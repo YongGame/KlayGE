@@ -28,16 +28,16 @@
  * from http://www.klayge.org/licensing/.
  */
 
-#ifndef KLAYGE_TOOLS_TOOL_COMMON_PLATFORM_DEFINITION_HPP
-#define KLAYGE_TOOLS_TOOL_COMMON_PLATFORM_DEFINITION_HPP
+#ifndef KLAYGE_PLUGINS_PLATFORM_DEFINITION_HPP
+#define KLAYGE_PLUGINS_PLATFORM_DEFINITION_HPP
 
 #pragma once
 
 #include <KlayGE/PreDeclare.hpp>
-#include <KFL/CXX17/string_view.hpp>
 #include <KlayGE/RenderDeviceCaps.hpp>
 
 #include <string>
+#include <string_view>
 
 #include <KlayGE/DevHelper/DevHelper.hpp>
 
@@ -62,4 +62,4 @@ namespace KlayGE
 	};
 }
 
-#endif		// KLAYGE_TOOLS_TOOL_COMMON_PLATFORM_DEFINITION_HPP
+#endif		// KLAYGE_PLUGINS_PLATFORM_DEFINITION_HPP

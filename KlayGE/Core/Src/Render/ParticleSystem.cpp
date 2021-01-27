@@ -30,7 +30,7 @@
 
 #include <KlayGE/KlayGE.hpp>
 
-#include <KFL/CXX2a/format.hpp>
+#include <KFL/CXX20/format.hpp>
 #include <KFL/ErrorHandling.hpp>
 #include <KFL/StringUtil.hpp>
 #include <KlayGE/FrameBuffer.hpp>
@@ -423,7 +423,7 @@ namespace
 		float life_factor;
 		float alpha;
 	};
-	KLAYGE_STATIC_ASSERT(sizeof(ParticleInstance) == 32);
+	static_assert(sizeof(ParticleInstance) == 32);
 #ifdef KLAYGE_HAS_STRUCT_PACK
 #pragma pack(pop)
 #endif

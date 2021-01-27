@@ -55,7 +55,7 @@
 #pragma once
 
 #include <KlayGE/PreDeclare.hpp>
-#include <KFL/CXX2a/span.hpp>
+#include <KFL/CXX20/span.hpp>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -129,7 +129,7 @@ namespace KlayGE
 
 		REDT_count
 	};
-	KLAYGE_STATIC_ASSERT(REDT_count < 256);
+	static_assert(REDT_count < 256);
 
 	class KLAYGE_CORE_API RenderVariable : boost::noncopyable
 	{

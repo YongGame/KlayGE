@@ -14,7 +14,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <KlayGE/KlayGE.hpp>
-#include <KFL/CXX17.hpp>
 #include <KFL/ErrorHandling.hpp>
 #include <KFL/Math.hpp>
 #include <KFL/SmartPtrHelper.hpp>
@@ -63,7 +62,7 @@ namespace
 		std::mem_fn(&ID3D11DeviceContext1::HSSetShaderResources),
 		std::mem_fn(&ID3D11DeviceContext1::DSSetShaderResources)
 	};
-	KLAYGE_STATIC_ASSERT(std::size(ShaderSetShaderResources) == NumShaderStages);
+	static_assert(std::size(ShaderSetShaderResources) == NumShaderStages);
 
 	static std::function<void(ID3D11DeviceContext1*, UINT, UINT, ID3D11SamplerState * const *)> const ShaderSetSamplers[] =
 	{
@@ -74,7 +73,7 @@ namespace
 		std::mem_fn(&ID3D11DeviceContext1::HSSetSamplers),
 		std::mem_fn(&ID3D11DeviceContext1::DSSetSamplers)
 	};
-	KLAYGE_STATIC_ASSERT(std::size(ShaderSetSamplers) == NumShaderStages);
+	static_assert(std::size(ShaderSetSamplers) == NumShaderStages);
 
 	static std::function<void(ID3D11DeviceContext1*, UINT, UINT, ID3D11Buffer * const *)> const ShaderSetConstantBuffers[] =
 	{
@@ -85,7 +84,7 @@ namespace
 		std::mem_fn(&ID3D11DeviceContext1::HSSetConstantBuffers),
 		std::mem_fn(&ID3D11DeviceContext1::DSSetConstantBuffers)
 	};
-	KLAYGE_STATIC_ASSERT(std::size(ShaderSetConstantBuffers) == NumShaderStages);
+	static_assert(std::size(ShaderSetConstantBuffers) == NumShaderStages);
 }
 
 namespace KlayGE
@@ -110,7 +109,7 @@ namespace KlayGE
 			::MessageBoxW(nullptr, L"Can't load d3d11.dll", L"Error", MB_OK);
 		}
 
-#if defined(KLAYGE_COMPILER_GCC) && (KLAYGE_COMPILER_VERSION >= 80)
+#if defined(KLAYGE_COMPILER_GCC)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif
@@ -123,7 +122,7 @@ namespace KlayGE
 		{
 			DynamicD3D11CreateDevice_ = reinterpret_cast<D3D11CreateDeviceFunc>(::GetProcAddress(mod_d3d11_, "D3D11CreateDevice"));
 		}
-#if defined(KLAYGE_COMPILER_GCC) && (KLAYGE_COMPILER_VERSION >= 80)
+#if defined(KLAYGE_COMPILER_GCC)
 #pragma GCC diagnostic pop
 #endif
 #else

@@ -30,7 +30,7 @@
 
 #include <KlayGE/KlayGE.hpp>
 
-#include <KFL/CXX2a/format.hpp>
+#include <KFL/CXX20/format.hpp>
 #include <KFL/ErrorHandling.hpp>
 #include <KFL/StringUtil.hpp>
 #include <KlayGE/ResLoader.hpp>
@@ -144,7 +144,7 @@ namespace
 				}
 				else
 				{
-					std::filesystem::path res_path(mtl_desc_.res_name);
+					FILESYSTEM_NS::path res_path(mtl_desc_.res_name);
 					mtl_desc_.mtl_data->name = res_path.stem().string();
 				}
 			}
